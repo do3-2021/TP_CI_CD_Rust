@@ -37,3 +37,8 @@ resource "google_container_node_pool" "node-pool-tp-cicd" {
     machine_type = "e2-medium"
   }
 }
+
+resource "google_service_account" "service-account-gh-action" {
+  account_id   = "gh-action-sa"
+  display_name = "GitHub Action Service Account"
+}
