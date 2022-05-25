@@ -1,1 +1,4 @@
 /target
+service-account-key.json
+.terraform
+.terraform.lock.hcl
