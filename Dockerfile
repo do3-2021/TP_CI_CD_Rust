@@ -1,7 +1,7 @@
-FROM scratch:latest
+FROM scratch
 
-WORKDIR /
-COPY target/release/rust-tp-cicd ./app
+WORKDIR /usr/local/bin
+COPY target/release/rust-tp-cicd ./rust-tp-cicd
 
 EXPOSE 2022
-ENTRYPOINT [ "/app" ]
+ENTRYPOINT ["app"]
