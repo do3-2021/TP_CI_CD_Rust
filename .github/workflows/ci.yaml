@@ -35,3 +35,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           image: slucido/hello-world-rust
           tags: ${{ github.sha }}
+          addLatest: true
