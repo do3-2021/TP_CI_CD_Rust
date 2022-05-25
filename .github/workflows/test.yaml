@@ -1,9 +1,22 @@
-name: Run all tests
+name: Run all tests & linter
 
 on:
   push:
 
 jobs:
+  lint-all:
+    name: Run lint for the project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v1
+      - uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features -- -D warnings
   test-all:
     name: Run all tests for the project
     runs-on: ubuntu-latest
