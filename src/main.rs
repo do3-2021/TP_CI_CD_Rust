@@ -1,16 +1,15 @@
 use actix_web::{
     error, get,
-    http::{self, StatusCode},
     middleware::Logger,
     post, web,
-    web::{Data, Payload},
-    App, Error, HttpMessage, HttpRequest, HttpResponse, HttpServer, Responder,
+    web::{Data},
+    App, Error, HttpResponse, HttpServer, Responder,
 };
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tokio_postgres::{self, tls::NoTlsStream, Client, Connection, NoTls, Socket};
+use tokio_postgres::{self, Client, NoTls};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AddCity {
@@ -49,21 +48,14 @@ async fn write_to_db(
     let obj = serde_json::from_slice::<AddCity>(&body)?;
     println!("{:?}", obj);
     let query = format!("INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ('{}', '{}', '{}', '{}', {}, {})", obj.department_code, obj.insee_code, obj.zip_code, obj.name, obj.lat, obj.lon);
-    &data
+    data
         .client
         .clone()
         .lock()
         .await
         .query(
             query.as_str(),
-            &[
-                &obj.department_code,
-                &obj.insee_code,
-                &obj.zip_code,
-                &obj.name,
-                &obj.lat,
-                &obj.lon,
-            ],
+            &[],
         )
         .await
         .unwrap();
