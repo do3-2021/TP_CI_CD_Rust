@@ -23,6 +23,15 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+
+env:
+- name: CITY_DB_URL
+  value: localhost:5432
+- name: CITY_DB_USER
+  value: postgres
+- name: CITY_DB_PASSWORD
+  value: password
+
 podAnnotations: {}
 
 podSecurityContext: {}
