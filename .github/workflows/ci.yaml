@@ -66,6 +66,7 @@ jobs:
       - id: "auth"
         uses: "google-github-actions/auth@v0"
         with:
+<<<<<<< HEAD
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
       - name: "Set up Cloud SDK"
@@ -82,3 +83,32 @@ jobs:
 
       - name: "Deploy chart"
         run: helm upgrade --install ${{env.chart-name}} ${{env.chart-path}} --values ${{env.values-path}}
+=======
+          context: .
+          push: true
+          tags: slucido/hello-world-rust:${{ steps.version.outputs.version }}
+
+  deploy-k3d:
+    runs-on: ubuntu-latest
+    environment: k3d
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Decode kubeconfig file
+      run: |
+        echo "::set-output name=KUBECONFIG_DECODED::$('${{ secrets.KUBERNETES_CONFIG }}')"
+      id: kubeconfig
+
+    - name: Install helm
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+
+    - name: Move kubeconfig file
+      run: echo "${{ secrets.KUBERNETES_CONFIG_DECODED }}" > ./kubeconfig
+
+    - name: Execute helm command
+      run: helm upgrade rust-tp-cicd ./helm/ --install --kubeconfig=./kubeconfig -f ./helm/values-cd-k3d.yaml
+>>>>>>> 4a8d297 (feat: add cd for k3d)

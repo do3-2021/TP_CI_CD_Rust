@@ -16,12 +16,20 @@ fullnameOverride: ""
 
 env:
 - name: CITY_DB_URL
-  value: localhost:5432
+  valueFrom:
+    secretKeyRef:
+      name: city-db
+      key: url
 - name: CITY_DB_USER
-  value: postgres
+  valueFrom:
+    secretKeyRef:
+      name: city-db
+      key: user
 - name: CITY_DB_PASSWORD
-  value: password
-
+  valueFrom:
+    secretKeyRef:
+      name: city-db
+      key: password
 
 serviceAccount:
   # Specifies whether a service account should be created
