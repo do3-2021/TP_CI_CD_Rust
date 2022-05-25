@@ -10,29 +10,37 @@ jobs:
     name: Build and push to docker.io
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: git fetch --prune --unshallow
-      - uses: gittools/actions/gitversion/setup@v0.9.11
+      - name: Fetch git history
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install gitversion
+        uses: gittools/actions/gitversion/setup@v0.9.11
         with:
           versionSpec: "5.x"
-      - id: gitversion
+      - name: Run gitversion
+        id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.11
-      - id: version
+      - name: Format gitversion output
+        id: version
         run: echo "::set-output name=version::${{ steps.gitversion.outputs.majorMinorPatch }}-${{ steps.gitversion.outputs.shortSha }}"
-      - uses: actions-rs/toolchain@v1
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
-      - uses: actions-rs/cargo@v1
+      - name: Use dependencies cache
+        uses: Swatinem/rust-cache@v1
+      - name: Build and package release application
+        uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --all-features
       - name: Build and push the docker image
-        uses: mr-smithers-excellent/docker-build-push@v5
+        uses: docker-build-push
         with:
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           image: slucido/hello-world-rust
-          tags: ${{ github.sha }}
+          tags: ${{ steps.version.outputs.version }}
           addLatest: true
