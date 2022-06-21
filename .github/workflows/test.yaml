@@ -20,6 +20,12 @@ jobs:
   test-all:
     name: Run all tests for the project
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: city_api
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -29,3 +35,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
+        env:
+          CITY_DB_URL: localhost:5432/city_api
+          CITY_DB_USER: postgres
+          CITY_DB_PASSWORD: postgres

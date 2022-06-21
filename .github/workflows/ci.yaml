@@ -47,14 +47,6 @@ jobs:
           toolchain: stable
       - name: Use dependencies cache
         uses: Swatinem/rust-cache@v1
-      - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-        env: 
-          CITY_DB_URL: localhost:5432/city_api
-          CITY_DB_USER: postgres
-          CITY_DB_PASSWORD: postgres
       - name: Build and package release application
         uses: actions-rs/cargo@v1
         with:
