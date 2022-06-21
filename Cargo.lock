@@ -431,6 +431,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "city-api"
+version = "0.1.0"
+dependencies = [
+ "actix",
+ "actix-web",
+ "actix-web-prom",
+ "env_logger",
+ "futures 0.3.21",
+ "serde",
+ "serde_json",
+ "tokio 1.18.1",
+ "tokio-postgres",
+]
+
+[[package]]
 name = "cloudabi"
 version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1660,21 +1675,6 @@ checksum = "11834e137f3b14e309437a8276714eed3a80d1ef894869e510f2c0c0b98b9f4a"
 dependencies = [
  "hostname",
  "quick-error",
-]
-
-[[package]]
-name = "rust-tp-cicd"
-version = "0.1.0"
-dependencies = [
- "actix",
- "actix-web",
- "actix-web-prom",
- "env_logger",
- "futures 0.3.21",
- "serde",
- "serde_json",
- "tokio 1.18.1",
- "tokio-postgres",
 ]
 
 [[package]]
