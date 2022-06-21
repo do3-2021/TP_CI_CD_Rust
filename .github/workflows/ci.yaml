@@ -13,10 +13,11 @@ env:
   chart-path: ./helm/api
   values-path: ./helm/api/values.yaml
 
+jobs:
   build_and_push:
     name: Build and push to docker.io
     runs-on: ubuntu-latest
-        services:
+    services:
       # Label used to access the service container
       postgres:
         # Docker Hub image
