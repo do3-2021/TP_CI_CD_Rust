@@ -149,3 +149,49 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use actix_web::{
+        http::{self, header::ContentType},
+        test,
+    };
+
+    #[actix_web::test]
+    async fn test_health_ok() {
+        let resp = health().await;
+        assert_eq!(resp.status(), http::StatusCode::OK);
+    }
+
+    #[actix_web::test]
+    async fn test_index_get() {
+        let db_url = format!("postgres://postgres:postgres@localhost:5432/city_api");
+
+        let (client, connection) = tokio_postgres::connect(db_url.as_str(), NoTls)
+            .await
+            .unwrap();
+
+        tokio::spawn(async move {
+            if let Err(e) = connection.await {
+                eprintln!("connection error: {}", e);
+            }
+        });
+
+        let arc_mutex_client = Arc::new(Mutex::new(client));
+
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(AppState {
+                    client: arc_mutex_client,
+                }))
+                .service(get_cities),
+        )
+        .await;
+
+        let req = test::TestRequest::get().uri("/").to_request();
+        let resp = test::call_service(&app, req).await;
+
+        assert_eq!(resp.status(), 200);
+    }
+}
