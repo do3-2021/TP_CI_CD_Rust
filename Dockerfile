@@ -1,4 +1,4 @@
-FROM scratch
+FROM alpine:3.16
 
 LABEL MAINTAINER="do3 <do3@etu.umontpellier.fr>"
 LABEL APP="city-api"
