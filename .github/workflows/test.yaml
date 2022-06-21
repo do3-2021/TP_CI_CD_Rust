@@ -20,6 +20,7 @@ jobs:
   test-all:
     name: Run all tests for the project
     runs-on: ubuntu-latest
+    container: rust:latest
     services:
       postgres:
         image: postgres
