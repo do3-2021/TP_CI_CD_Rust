@@ -17,3 +17,11 @@ variable "region" {
 variable "cluster-location" {
   default = "europe-west1-b"
 }
+
+variable "kubeconfig_path" {
+  default = "~/.kube/config"
+}
+
+variable "kubeconfig_context" {
+  default = "gke_boxwood-charmer-347912_europe-west1-b_cluster-tp-cicd"
+}
