@@ -1,13 +1,11 @@
 use actix_web::{
-    error, get,
-    middleware::Logger,
-    post, web,
-    web::{Data},
-    App, Error, HttpResponse, HttpServer, Responder,
+    error, get, middleware::Logger, post, web, web::Data, App, Error, HttpResponse, HttpServer,
+    Responder,
 };
+use actix_web_prom::PrometheusMetricsBuilder;
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 use tokio::sync::Mutex;
 use tokio_postgres::{self, Client, NoTls};
 
@@ -48,15 +46,11 @@ async fn write_to_db(
     let obj = serde_json::from_slice::<AddCity>(&body)?;
     println!("{:?}", obj);
     let query = format!("INSERT INTO city (department_code, insee_code, zip_code, name, lat, lon) VALUES ('{}', '{}', '{}', '{}', {}, {})", obj.department_code, obj.insee_code, obj.zip_code, obj.name, obj.lat, obj.lon);
-    data
-        .client
+    data.client
         .clone()
         .lock()
         .await
-        .query(
-            query.as_str(),
-            &[],
-        )
+        .query(query.as_str(), &[])
         .await
         .unwrap();
 
@@ -90,9 +84,8 @@ async fn get_cities(data: web::Data<AppState>) -> impl Responder {
     HttpResponse::Ok().json(cities)
 }
 
-#[get("/health")]
-async fn health() -> impl Responder {
-    HttpResponse::NoContent()
+async fn health() -> HttpResponse {
+    HttpResponse::Ok().finish()
 }
 
 struct AppState {
@@ -130,6 +123,14 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
+    let mut labels = HashMap::new();
+    labels.insert("label1".to_string(), "value1".to_string());
+    let prometheus = PrometheusMetricsBuilder::new("api")
+        .endpoint("/metrics")
+        .const_labels(labels)
+        .build()
+        .unwrap();
+
     HttpServer::new(move || {
         let arc_mutex_client = arc_mutex_client.clone();
 
@@ -140,8 +141,9 @@ async fn main() -> std::io::Result<()> {
             }))
             .route("/hello", web::get().to(|| async { "Hello World!" }))
             .service(write_to_db)
-            .service(health)
             .service(get_cities)
+            .wrap(prometheus.clone())
+            .service(web::resource("/health").to(health))
     })
     .bind((api_addr, api_port.parse().unwrap()))?
     .run()
