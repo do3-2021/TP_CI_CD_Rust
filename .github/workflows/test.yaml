@@ -36,6 +36,6 @@ jobs:
         with:
           command: test
         env:
-          CITY_DB_URL: localhost:5432/city_api
+          CITY_DB_URL: postgres:5432/city_api
           CITY_DB_USER: postgres
           CITY_DB_PASSWORD: postgres
