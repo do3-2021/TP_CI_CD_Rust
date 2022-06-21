@@ -11,3 +11,9 @@ grafana:
       - secretName: grafana-tls
         hosts:
           - grafana.staging.polycode.do-2021.fr
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: scrape-city-api
+        static_configs:
+          - targets: ["hello-rust-rust-tp-cicd/metrics"]
