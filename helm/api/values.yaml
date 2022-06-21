@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: slucido/hello-world-rust
+  repository: slucido/city-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -23,21 +23,22 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-
 env:
-- name: CITY_DB_URL
-  value: localhost:5432
-- name: CITY_DB_USER
-  value: postgres
-- name: CITY_DB_PASSWORD
-  value: password
+  - name: CITY_DB_URL
+    value: localhost:5432
+  - name: CITY_DB_USER
+    value: postgres
+  - name: CITY_DB_PASSWORD
+    value: password
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -52,11 +53,12 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: prod.rust-tp-cicd.k3d.pt.iverly.net 
+    - host: prod.rust-tp-cicd.k3d.pt.iverly.net
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -65,7 +67,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

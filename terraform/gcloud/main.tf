@@ -37,8 +37,8 @@ resource "google_container_cluster" "cluster-tp-cicd" {
   initial_node_count       = 1
 
   ip_allocation_policy {
-    cluster_ipv4_cidr_block       = "10.76.0.0/14"
-    services_secondary_range_name = "gke-cluster-tp-cicd-pods-f80d1a41"
+    cluster_ipv4_cidr_block  = "10.76.0.0/14"
+    services_ipv4_cidr_block = "10.80.0.0/20"
   }
 }
 
