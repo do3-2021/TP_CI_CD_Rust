@@ -154,7 +154,7 @@ async fn main() -> std::io::Result<()> {
 mod tests {
     use super::*;
     use actix_web::{
-        http::{self, header::ContentType},
+        http::{self},
         test,
     };
 
@@ -166,7 +166,10 @@ mod tests {
 
     #[actix_web::test]
     async fn test_index_get() {
-        let db_url = format!("postgres://postgres:postgres@localhost:5432/city_api");
+        let db_url = std::env::var("CITY_DB_URL").expect("CITY_DB_URL must be set");
+        let db_user = std::env::var("CITY_DB_USER").expect("CITY_DB_USER must be set");
+        let db_password = std::env::var("CITY_DB_PASSWORD").expect("CITY_DB_PASSWORD must be set");
+        let db_url = format!("postgres://{}:{}@{}", db_user, db_password, db_url);
 
         let (client, connection) = tokio_postgres::connect(db_url.as_str(), NoTls)
             .await

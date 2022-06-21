@@ -13,10 +13,18 @@ env:
   chart-path: ./helm/api
   values-path: ./helm/api/values.yaml
 
-jobs:
   build_and_push:
     name: Build and push to docker.io
     runs-on: ubuntu-latest
+        services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: city_api
     steps:
       - name: Fetch git history
         uses: actions/checkout@v3
@@ -38,6 +46,14 @@ jobs:
           toolchain: stable
       - name: Use dependencies cache
         uses: Swatinem/rust-cache@v1
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+        env: 
+          CITY_DB_URL: localhost:5432/city_api
+          CITY_DB_USER: postgres
+          CITY_DB_PASSWORD: postgres
       - name: Build and package release application
         uses: actions-rs/cargo@v1
         with:
@@ -54,7 +70,7 @@ jobs:
           context: .
           push: true
           tags: slucido/city-api:${{ steps.version.outputs.version }}, slucido/city-api:latest
-  
+
   deploy-gcloud:
     name: Deploy to gcloud
     environment: gcloud
