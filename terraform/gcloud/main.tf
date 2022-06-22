@@ -46,7 +46,7 @@ resource "google_container_node_pool" "node-pool-tp-cicd" {
   name       = "node-pool-tp-cicd"
   location   = var.cluster-location
   cluster    = google_container_cluster.cluster-tp-cicd.name
-  node_count = 1
+  node_count = 2
 
   node_config {
     machine_type = "e2-medium"
