@@ -8,22 +8,22 @@ jobs:
     runs-on: self-hosted
     environment: k3d
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Decode kubeconfig file
-      run: |
-        echo "::set-output name=KUBECONFIG_DECODED::$('${{ secrets.KUBERNETES_CONFIG }}')"
-      id: kubeconfig
+      - name: Decode kubeconfig file
+        run: |
+          echo "::set-output name=KUBECONFIG_DECODED::$('${{ secrets.KUBERNETES_CONFIG }}')"
+        id: kubeconfig
 
-    - name: Install helm
-      run: |
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-        chmod 700 get_helm.sh
-        ./get_helm.sh
+      - name: Install helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
 
-    - name: Move kubeconfig file
-      run: echo "${{ secrets.KUBERNETES_CONFIG_DECODED }}" > ./kubeconfig
+      - name: Move kubeconfig file
+        run: echo "${{ secrets.KUBERNETES_CONFIG_DECODED }}" > ./kubeconfig
 
-    - name: Execute helm command
-      run: helm upgrade rust-tp-cicd ./helm/ --install --kubeconfig=./kubeconfig -f ./helm/values-cd-k3d.yaml
+      - name: Execute helm command
+        run: helm upgrade rust-tp-cicd ./helm/ --install --kubeconfig=./kubeconfig -f ./helm/values-cd-k3d.yaml
