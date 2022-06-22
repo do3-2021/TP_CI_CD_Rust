@@ -24,6 +24,8 @@ serviceAccount:
   name: ""
 
 env:
+  - name: CITY_API_PORT
+    value: 8080
   - name: CITY_DB_URL
     value: localhost:5432
   - name: CITY_DB_USER
@@ -48,7 +50,7 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 2022
+  port: 8080
 
 ingress:
   enabled: false
