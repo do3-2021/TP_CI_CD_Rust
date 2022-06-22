@@ -181,6 +181,24 @@ mod tests {
             }
         });
 
+        match client
+            .batch_execute(
+                "CREATE TABLE city (
+                        id              SERIAL PRIMARY KEY,
+                        department_code VARCHAR NOT NULL,
+                        insee_code      VARCHAR,
+                        zip_code        VARCHAR,
+                        name            VARCHAR NOT NULL,
+                        lat             FLOAT,
+                        lon             FLOAT
+                    )",
+            )
+            .await
+        {
+            Ok(_) => (),
+            Err(e) => eprintln!("{}", e),
+        };
+
         let arc_mutex_client = Arc::new(Mutex::new(client));
 
         let app = test::init_service(
