@@ -4,6 +4,10 @@
 
 replicaCount: 1
 
+postgresql:
+  auth:
+    postgresPassword: password
+
 image:
   repository: slucido/city-api
   pullPolicy: Always
